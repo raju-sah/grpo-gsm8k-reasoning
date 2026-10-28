@@ -1,0 +1,22 @@
+# Full run: 500 steps, ~4-10 GPU h on T4. Resume across 12 h sessions.
+model_name: unsloth/Qwen2.5-1.5B-Instruct
+load_in_4bit: true
+lora: {rank: 32, alpha: 32, target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]}
+vllm_gpu_memory_utilization: 0.5
+grpo:
+  num_generations: 8
+  max_prompt_length: 256
+  max_completion_length: 512
+  learning_rate: 5.0e-6
+  beta: 0.0
+  per_device_train_batch_size: 8
+  gradient_accumulation_steps: 1
+  max_steps: 500
+  save_steps: 50
+  logging_steps: 1
+  fp16: true
+  use_vllm: true
+  report_to: wandb
+rewards: [correctness_reward, format_reward, int_reward]
+eval: {subset_size: 300, seed: 42}
+output_dir: /kaggle/working/outputs/full_1.5b
