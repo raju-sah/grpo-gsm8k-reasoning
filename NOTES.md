@@ -18,7 +18,7 @@ Running log of decisions, findings, and gotchas. Newest first.
 
 | Date | Run | Model | Steps | GPU h | Outcome |
 |---|---|---|---|---|---|
-| | | | | | |
+| 2026-10-28 | Baseline Eval | Qwen2.5-0.5B / 1.5B | 0 | ~1.2 h | 0.5B: 0.0% acc, 0.0% format (271 tok). 1.5B: 2.67% acc, 0.33% format (238 tok). Both attempt free-form reasoning without <think>/<answer> tags. |
 
 ## Reference notes
 

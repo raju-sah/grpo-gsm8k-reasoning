@@ -9,8 +9,10 @@ trained on a **free Kaggle T4** with Unsloth + TRL.
 
 | Model | GSM8K acc (greedy) | Format compliance | Avg. length |
 |---|---|---|---|
-| Baseline | _TBD_ | | |
-| + GRPO | _TBD_ | | |
+| Baseline 0.5B (`Qwen2.5-0.5B-Instruct`) | 0.0% | 0.0% | 271.5 tokens |
+| Baseline 1.5B (`Qwen2.5-1.5B-Instruct`) | 2.67% | 0.33% | 238.1 tokens |
+| + GRPO (0.5B debug, 50 steps) | _TBD_ | | |
+| + GRPO (1.5B full, 500 steps) | _TBD_ | | |
 
 ## Layout
 

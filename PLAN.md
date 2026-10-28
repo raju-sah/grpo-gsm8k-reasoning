@@ -47,8 +47,8 @@ No R1-level "aha moments" at 1.5B.
 ## Steps
 
 ### Phase 1 — Baseline & debug (Week 3, ~6–10 GPU h)
-- [x] 1. **Baseline eval** (`src/grpo_reason/eval.py`, `kaggle/eval/eval.py`): untouched model on GSM8K test (fixed
-      300-question subset, seed 42), greedy decoding, same prompt as training. Ready to push to Kaggle T4.
+- [x] 1. **Baseline eval** (`src/grpo_reason/eval.py`, `kaggle/eval/eval.py`): completed on Kaggle T4 over fixed
+      300-question subset (seed 42). Recorded in `reports/results.md`: 0.5B = 0.0% acc / 0.0% format; 1.5B = 2.67% acc / 0.33% format.
 - [x] 2. **Format** (`prompts.py`): system prompt → `<think> ... </think><answer> 42 </answer>`.
 - [x] 3. **Reward functions** (`rewards.py`, unit-tested):
   - `correctness_reward`: 2.0 if extracted answer == gold, else 0
