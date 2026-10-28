@@ -3,8 +3,8 @@
 ```bash
 kaggle kernels push -p kaggle/eval            # baseline / final eval
 kaggle kernels push -p kaggle/train           # GRPO training
-kaggle kernels status rajucode/grpo-gsm8k-train
-kaggle kernels output rajucode/grpo-gsm8k-train -p kaggle/train/out
+kaggle kernels status buggeddev/grpo-gsm8k-train
+kaggle kernels output buggeddev/grpo-gsm8k-train -p kaggle/train/out
 ```
 
 - `machine_shape: NvidiaTeslaT4` is set in each `kernel-metadata.json` (or pass `--accelerator NvidiaTeslaT4`).
