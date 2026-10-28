@@ -6,6 +6,12 @@ Running log of decisions, findings, and gotchas. Newest first.
 
 | Date | Decision | Why |
 |---|---|---|
+| 2026-10-28 | LoRA checkpoint push to private HF Hub every 50 steps via `HF_TOKEN` + `WANDB_API_KEY` | Adapter checkpoints are ~50 MB, fast to push; guarantees resumption across Kaggle 12h timeouts without dataset API quotas or latency. |
+| 2026-10-28 | KL penalty `beta = 0.0` | Eliminates ref model forward passes, saving T4 VRAM and ~25–35% compute; rule-based math verifier resists drift and LoRA implicitly regularizes. |
+| 2026-10-28 | Reward shaping: 2.0 Correctness, 0.5 Format, 0.25 Int + strict single-tag pair check, no length penalty | Dense format/int rewards bootstrap early gradient; single-tag count rule stops tag repetition hacks; avoids punishing reasoning length up to 512 tokens. |
+| 2026-10-28 | GSM8K eval on fixed 300-question subset (seed 42) | Fast (~5 min greedy eval on T4 vs ~25 min), saves precious GPU quota, ~2.8% standard error is plenty to verify 5–15 point reasoning gains. |
+| 2026-10-28 | Instruct variants (`Qwen2.5-0.5B-Instruct` / `Qwen2.5-1.5B-Instruct`) | Chat template compliance prevents early format failure and flat-reward zero-variance collapse within tight 10–25h budget. |
+| 2026-10-28 | Model family: Qwen2.5 (0.5B debug, 1.5B full run) | Battle-tested with Unsloth 4-bit + vLLM on T4 fp16; baseline accuracy sits right in 30–70% sweet spot for GRPO group reward variance ($std > 0$). |
 | 2026-10-28 | Repo scaffolded | — |
 
 ## GPU budget tracker (Kaggle ~30 h/week)

@@ -18,5 +18,7 @@ grpo:
   use_vllm: true
   report_to: wandb
 rewards: [correctness_reward, format_reward, int_reward]
+reward_weights: {correctness: 2.0, format: 0.5, int: 0.25}
 eval: {subset_size: 300, seed: 42}
 output_dir: /kaggle/working/outputs/full_1.5b
+hub: {push_to_hub: true, repo_id: "rajucode/grpo-gsm8k-1.5b-checkpoints", private: true}

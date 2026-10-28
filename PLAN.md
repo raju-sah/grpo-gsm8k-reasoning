@@ -26,11 +26,12 @@ The group mean is the baseline → **no critic/value model** (unlike PPO) → fi
 
 | Item | Choice |
 |---|---|
-| Model | debug: `Qwen2.5-0.5B-Instruct` (or `Qwen3-0.6B`) → real: `Qwen2.5-1.5B-Instruct` (or `Qwen3-1.7B`, `Gemma-3-1B`) |
-| Dataset | GSM8K (7.5k train / 1.3k test). Later: MATH, Countdown |
-| Libraries | Unsloth (LoRA + 4-bit + vLLM fast generation) + TRL `GRPOTrainer` |
+| Model | debug: `unsloth/Qwen2.5-0.5B-Instruct` → real: `unsloth/Qwen2.5-1.5B-Instruct` |
+| Dataset | GSM8K (7.5k train / fixed 300-question test subset, seed 42) |
+| Libraries | Unsloth (LoRA + 4-bit + vLLM fast generation) + TRL `GRPOTrainer` + `huggingface_hub` |
 | GPU | Kaggle **T4** (vLLM needs compute capability ≥ 7.0; P100 is 6.0). **fp16**, not bf16. Single GPU |
 | Tracking | Weights & Biases (`WANDB_API_KEY` as Kaggle secret) |
+| Hub | Hugging Face Hub (`HF_TOKEN` as Kaggle secret) for checkpoint push/resume |
 
 ## Feasibility on Kaggle
 
@@ -78,13 +79,14 @@ No R1-level "aha moments" at 1.5B.
 > **Reward hacking is common** — tags with garbage inside, repeated answers. Always read sample
 > completions (log 4 per N steps to `reports/samples/`), not just the reward curve.
 
-## Open decisions (for /grill-me when we get here)
+## Decisions (resolved via /grill-me)
 
-- [ ] Qwen2.5 vs Qwen3 (Qwen3 has native thinking mode — may already be near-ceiling on GSM8K)
-- [ ] Instruct vs base model (base shows bigger relative gains)
-- [ ] `beta` = 0 vs 0.04
-- [ ] Eval subset: full 1,319 vs fixed 300
-- [ ] Resume strategy across sessions: HF Hub checkpoints vs Kaggle dataset versions
+- [x] **Model family & size**: Qwen2.5 (0.5B for debug, 1.5B for main run) — supported on T4 fp16 + Unsloth 4-bit, sits in the 30–70% GSM8K reward-variance sweet spot.
+- [x] **Base vs Instruct**: Instruct (`Qwen2.5-0.5B-Instruct` / `Qwen2.5-1.5B-Instruct`) — chat template compatibility prevents early zero-variance format failure within 10–25h GPU budget.
+- [x] **Eval subset**: Fixed 300-question subset (`seed=42`) across baseline, debug, and final evals (~5 min runtime on T4, saves GPU quota, ~2.8% SE).
+- [x] **Reward shaping & anti-hacking**: Weights: Correctness 2.0, Format 0.5, Int 0.25. Strict single-tag pair check (exactly 1 `<think>`, 1 `</think>`, 1 `<answer>`, 1 `</answer>`) prevents tag repetition. No artificial length penalty to preserve reasoning emergence up to 512 tokens.
+- [x] **KL penalty (`beta`)**: `0.0` — eliminates reference model forward passes, saves T4 VRAM and ~25–35% compute on verifiable rule-based math; LoRA acts as implicit regularizer.
+- [x] **Checkpoint & resume strategy**: Push LoRA checkpoints (~50 MB) directly to private HF Hub repo every 50 steps (`rajucode/grpo-gsm8k-checkpoints`), keeping local copies in `/kaggle/working`. Kaggle secrets: `HF_TOKEN`, `WANDB_API_KEY`.
 
 ## Definition of done
 
