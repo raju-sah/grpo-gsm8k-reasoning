@@ -50,7 +50,17 @@ def correctness_reward(completions, answer, **kwargs) -> list[float]:
 
 
 def format_reward(completions, **kwargs) -> list[float]:
-    return [0.5 if _FORMAT_RE.match(_text(c)) else 0.0 for c in completions]
+    out = []
+    for c in completions:
+        txt = _text(c)
+        single_tags = (
+            txt.count("<think>") == 1
+            and txt.count("</think>") == 1
+            and txt.count("<answer>") == 1
+            and txt.count("</answer>") == 1
+        )
+        out.append(0.5 if single_tags and bool(_FORMAT_RE.match(txt)) else 0.0)
+    return out
 
 
 def int_reward(completions, **kwargs) -> list[float]:

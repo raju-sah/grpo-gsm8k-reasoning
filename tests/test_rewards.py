@@ -31,3 +31,13 @@ def test_correctness():
 def test_format_and_int():
     assert format_reward([c(GOOD), c(BAD_FMT)]) == [0.5, 0.0]
     assert int_reward([c(GOOD)]) == [0.25]
+
+
+def test_format_anti_repetition():
+    nested_think = "<think>first <think> nested </think> reasoning</think><answer>12</answer>"
+    multi_think = "<think>first</think> middle <think>second</think><answer>12</answer>"
+    multi_answer = "<think>reasoning</think><answer>12</answer><answer>12</answer>"
+    unclosed = "<think>reasoning<answer>12</answer>"
+
+    completions = [c(nested_think), c(multi_think), c(multi_answer), c(unclosed)]
+    assert format_reward(completions) == [0.0, 0.0, 0.0, 0.0]

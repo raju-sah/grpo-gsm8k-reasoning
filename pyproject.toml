@@ -3,7 +3,11 @@ name = "grpo_reason"
 version = "0.1.0"
 description = "GRPO reasoning RL on GSM8K with Unsloth + TRL"
 requires-python = ">=3.10"
-dependencies = ["pyyaml", "huggingface_hub"]
+dependencies = [
+    "pyyaml",
+    "huggingface_hub",
+    "datasets>=4.8.5",
+]
 
 [project.optional-dependencies]
 train = ["unsloth", "vllm", "trl", "datasets", "wandb", "huggingface_hub"]
@@ -19,3 +23,10 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+ignore = ["E501"]

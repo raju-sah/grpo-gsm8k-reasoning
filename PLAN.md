@@ -47,16 +47,15 @@ No R1-level "aha moments" at 1.5B.
 ## Steps
 
 ### Phase 1 — Baseline & debug (Week 3, ~6–10 GPU h)
-- [ ] 1. **Baseline eval** (`src/grpo_reason/eval.py`): untouched model on GSM8K test (or fixed
-      300-question subset, seed 42), greedy decoding, same prompt as training. Record in
-      `reports/results.md`. **This number is the whole story of the project.**
-- [ ] 2. **Format** (`prompts.py`): system prompt → `<think> ... </think><answer> 42 </answer>`.
-- [ ] 3. **Reward functions** (`rewards.py`, unit-tested):
+- [x] 1. **Baseline eval** (`src/grpo_reason/eval.py`, `kaggle/eval/eval.py`): untouched model on GSM8K test (fixed
+      300-question subset, seed 42), greedy decoding, same prompt as training. Ready to push to Kaggle T4.
+- [x] 2. **Format** (`prompts.py`): system prompt → `<think> ... </think><answer> 42 </answer>`.
+- [x] 3. **Reward functions** (`rewards.py`, unit-tested):
   - `correctness_reward`: 2.0 if extracted answer == gold, else 0
-  - `format_reward`: 0.5 if tags present & well-formed
-  - optional `int_reward` (answer is a number), length penalty against rambling
-- [ ] 4. **Debug run on 0.5B** (`configs/grpo_debug_0.5b.yaml`, ~50 steps): pipeline works,
-      reward std > 0, checkpoints saved and resumable.
+  - `format_reward`: 0.5 if tags present & well-formed with strict single-tag pair enforcement
+  - `int_reward`: 0.25 if extracted answer is a clean integer
+- [ ] 4. **Debug run on 0.5B** (`configs/grpo_debug_0.5b.yaml`, ~50 steps): pipeline implemented in
+      `src/grpo_reason/train.py` and `kaggle/train/train.py`; ready to run on Kaggle T4.
 
 ### Phase 2 — Real run (Week 4, ~12–20 GPU h)
 - [ ] 5. **Configure GRPO** (`configs/grpo_1.5b.yaml`):
