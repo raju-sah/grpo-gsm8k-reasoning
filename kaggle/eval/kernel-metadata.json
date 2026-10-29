@@ -11,5 +11,5 @@
   "dataset_sources": [],
   "model_sources": [],
   "competition_sources": [],
-  "kernel_sources": []
+  "kernel_sources": ["buggeddev/grpo-gsm8k-train"]
 }

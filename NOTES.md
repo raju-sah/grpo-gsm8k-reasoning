@@ -20,6 +20,7 @@ Running log of decisions, findings, and gotchas. Newest first.
 |---|---|---|---|---|---|
 | 2026-10-28 | Baseline Eval | Qwen2.5-0.5B / 1.5B | 0 | ~1.2 h | 0.5B: 0.0% acc, 0.0% format (271 tok). 1.5B: 2.67% acc, 0.33% format (238 tok). Both attempt free-form reasoning without <think>/<answer> tags. |
 | 2026-10-29 | Debug Train | Qwen2.5-0.5B | 50 | ~0.7 h | 50/50 steps completed (runtime 16.8 min). Checkpoints saved at step 25 and 50. 6% non-zero reward variance groups due to 0.5B low baseline capacity. End-to-end Unsloth 4-bit + vLLM + TRL GRPOTrainer pipeline fully verified on T4 without OOM. |
+| 2026-10-29 | Main Train | Qwen2.5-1.5B | 500 | ~3.9 h | 500/500 steps completed (runtime ~3.7 h). Checkpoints saved every 50 steps up to checkpoint-500 + final_adapter. Mean reward increased from 0.4150 (steps 1–50) to 1.6769 (steps 451–500), correctness reward surged 4x from 0.355 to 1.450, with healthy non-zero group reward variance across 76% of batches. Stable completion length ~250 tokens without length hacking. |
 
 ## Reference notes
 

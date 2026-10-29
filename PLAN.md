@@ -54,23 +54,11 @@ No R1-level "aha moments" at 1.5B.
   - `correctness_reward`: 2.0 if extracted answer == gold, else 0
   - `format_reward`: 0.5 if tags present & well-formed with strict single-tag pair enforcement
   - `int_reward`: 0.25 if extracted answer is a clean integer
-- [ ] 4. **Debug run on 0.5B** (`configs/grpo_debug_0.5b.yaml`, ~50 steps): pipeline implemented in
-      `src/grpo_reason/train.py` and `kaggle/train/train.py`; ready to run on Kaggle T4.
+- [x] 4. **Debug run on 0.5B** (`configs/grpo_debug_0.5b.yaml`, ~50 steps): pipeline verified end-to-end on Kaggle T4 GPU (runtime 16.8 min, no OOM, checkpoints saved).
 
 ### Phase 2 — Real run (Week 4, ~12–20 GPU h)
-- [ ] 5. **Configure GRPO** (`configs/grpo_1.5b.yaml`):
-  ```python
-  GRPOConfig(
-      num_generations=8, max_completion_length=512,
-      learning_rate=5e-6, beta=0.0,  # or 0.04 for KL penalty
-      per_device_train_batch_size=8, gradient_accumulation_steps=1,
-      max_steps=500, save_steps=50, fp16=True, use_vllm=True,
-      logging_steps=1, report_to="wandb",
-  )
-  ```
-  LoRA rank 16–64, 4-bit load via Unsloth.
-- [ ] 6. **Train & watch**: mean reward ↑, reward std > 0, completion length, KL.
-      Flat reward at 0 → task too hard → easier model/dataset or short SFT warm-up (~200 formatted examples).
+- [x] 5. **Configure GRPO** (`configs/grpo_1.5b.yaml`): 500 steps, save every 50, rank 32 LoRA, Unsloth 4-bit, vLLM fast generation on T4.
+- [x] 6. **Train & watch**: 500 steps completed on Kaggle T4 (~3.9 GPU h). Mean reward increased from 0.4150 to 1.6769, correctness reward jumped from 0.355 to 1.450 (4x improvement), healthy ~76% non-zero variance batches, completion length steady at ~250 tokens without length hacking.
 - [ ] 7. **Final eval**: same prompt, same test set, greedy. Compare to baseline.
 - [ ] 8. **Publish**: LoRA → HF Hub; report with reward curves, before/after table, example traces.
 

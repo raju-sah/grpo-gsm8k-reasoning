@@ -67,31 +67,34 @@ def main():
 
     from grpo_reason.eval import evaluate_model
 
-    print("\n==========================================")
-    print("Running Baseline Eval: Qwen2.5-0.5B-Instruct")
-    print("==========================================")
-    evaluate_model(
-        model_name_or_path="unsloth/Qwen2.5-0.5B-Instruct",
-        subset_size=300,
-        seed=42,
-        max_new_tokens=512,
-        run_name="baseline-0.5b",
-        steps=0,
-        output_dir="/kaggle/working/reports",
-    )
+    adapter_path = os.environ.get("ADAPTER_PATH")
+    if not adapter_path:
+        candidates = [
+            "/kaggle/input/grpo-gsm8k-train/outputs/full_1.5b/final_adapter",
+            "/kaggle/input/grpo-gsm8k-train/outputs/full_1.5b/checkpoint-500",
+            "/kaggle/input/grpo-gsm8k-train/final_adapter",
+        ]
+        for c in candidates:
+            if os.path.exists(c):
+                adapter_path = c
+                break
 
-    print("\n==========================================")
-    print("Running Baseline Eval: Qwen2.5-1.5B-Instruct")
-    print("==========================================")
-    evaluate_model(
-        model_name_or_path="unsloth/Qwen2.5-1.5B-Instruct",
-        subset_size=300,
-        seed=42,
-        max_new_tokens=512,
-        run_name="baseline-1.5b",
-        steps=0,
-        output_dir="/kaggle/working/reports",
-    )
+    if adapter_path:
+        print("\n==========================================")
+        print(f"Running Final Eval: GRPO Qwen2.5-1.5B ({adapter_path})")
+        print("==========================================")
+        evaluate_model(
+            model_name_or_path=adapter_path,
+            subset_size=300,
+            seed=42,
+            max_new_tokens=512,
+            run_name="grpo-1.5b-final",
+            steps=500,
+            output_dir="/kaggle/working/reports",
+        )
+    else:
+        print("[Warning] Could not find trained adapter path in /kaggle/input/!")
+        print("Available in /kaggle/input/:", os.listdir("/kaggle/input") if os.path.exists("/kaggle/input") else "None")
 
     print("\nEvaluation complete! Output reports stored in /kaggle/working/reports.")
 
