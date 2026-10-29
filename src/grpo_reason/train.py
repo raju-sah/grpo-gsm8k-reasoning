@@ -36,13 +36,28 @@ def find_latest_checkpoint(output_dir: str | Path) -> str | None:
     return str(checkpoints[-1])
 
 
+def resolve_repo_id(repo_id: str) -> str:
+    try:
+        from huggingface_hub import HfApi
+
+        api = HfApi()
+        user_info = api.whoami()
+        user = user_info.get("name")
+        if user:
+            repo_name = repo_id.split("/")[-1]
+            return f"{user}/{repo_name}"
+    except Exception:
+        pass
+    return repo_id
+
+
 def get_hub_callback(hub_cfg: dict | None):
     if not hub_cfg or not hub_cfg.get("push_to_hub", False):
         return None
 
     from transformers import TrainerCallback
 
-    repo_id = hub_cfg.get("repo_id")
+    repo_id = resolve_repo_id(hub_cfg.get("repo_id", "grpo-checkpoints"))
     is_private = hub_cfg.get("private", True)
 
     class HubCheckpointCallback(TrainerCallback):
@@ -192,7 +207,7 @@ def train_grpo(
             from huggingface_hub import HfApi
 
             api = HfApi()
-            repo_id = hub_cfg.get("repo_id")
+            repo_id = resolve_repo_id(hub_cfg.get("repo_id", "grpo-checkpoints"))
             print(f"Pushing final adapter to HF Hub: {repo_id}...")
             api.upload_folder(
                 folder_path=str(final_output),
