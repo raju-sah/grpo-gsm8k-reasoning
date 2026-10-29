@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
 from typing import Any
 
@@ -76,6 +77,7 @@ def generate_greedy(
     backend: str,
     prompts_text: list[str],
     max_new_tokens: int = 512,
+    lora_path: str | None = None,
 ) -> list[str]:
     """Generate greedy completions for a list of formatted prompt texts."""
     completions: list[str] = []
@@ -89,7 +91,17 @@ def generate_greedy(
                 temperature=0.0,
                 max_tokens=max_new_tokens,
             )
-            outputs = model.fast_generate(prompts_text, sampling_params=sampling_params)
+            kwargs = {}
+            if lora_path and os.path.exists(os.path.join(lora_path, "adapter_config.json")):
+                try:
+                    from vllm.lora.request import LoRARequest
+
+                    kwargs["lora_request"] = LoRARequest("grpo_adapter", 1, lora_path)
+                    print(f"Applying vLLM LoRARequest with adapter: {lora_path}")
+                except Exception as le:
+                    print(f"Notice: Could not initialize LoRARequest ({le})")
+
+            outputs = model.fast_generate(prompts_text, sampling_params=sampling_params, **kwargs)
             for out in outputs:
                 completions.append(out.outputs[0].text)
             return completions
@@ -148,6 +160,9 @@ def evaluate_model(
         for item in dataset
     ]
 
+    is_lora = os.path.exists(os.path.join(model_name_or_path, "adapter_config.json"))
+    lora_path = model_name_or_path if is_lora else None
+
     print(f"Generating completions (greedy, max_new_tokens={max_new_tokens})...")
     completions = generate_greedy(
         model=model,
@@ -155,6 +170,7 @@ def evaluate_model(
         backend=backend,
         prompts_text=formatted_prompts,
         max_new_tokens=max_new_tokens,
+        lora_path=lora_path,
     )
 
     if prefill_think:

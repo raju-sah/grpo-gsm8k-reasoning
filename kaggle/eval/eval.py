@@ -95,31 +95,10 @@ def main():
                 elif not adapter_path:
                     adapter_path = root
 
-    # Run separate subprocesses for each evaluation to isolate vLLM C++ CUDA contexts
-    # 1. Baseline 1.5B Primed
-    print("\n==========================================")
-    print("Running Eval 1/2: Baseline Qwen2.5-1.5B (Primed with <think>\\n)")
-    print("==========================================")
-    cmd_base = [
-        sys.executable,
-        "-m",
-        "grpo_reason.eval",
-        "--model",
-        "unsloth/Qwen2.5-1.5B-Instruct",
-        "--prefill-think",
-        "--run-name",
-        "baseline-1.5b-primed",
-        "--steps",
-        "0",
-        "--output-dir",
-        "/kaggle/working/reports",
-    ]
-    subprocess.run(cmd_base, env=env, check=True)
-
-    # 2. GRPO 1.5B Primed
+    # Run GRPO 1.5B Primed with explicit LoRARequest
     if adapter_path:
         print("\n==========================================")
-        print(f"Running Eval 2/2: GRPO Qwen2.5-1.5B (Primed with <think>\\n, {adapter_path})")
+        print(f"Running GRPO Qwen2.5-1.5B Primed Eval ({adapter_path})")
         print("==========================================")
         cmd_grpo = [
             sys.executable,
