@@ -40,7 +40,7 @@ def setup_environment():
         "pip install --no-deps trl",
         "pip install unsloth_zoo",
         "pip install git+https://github.com/unslothai/unsloth.git",
-        "pip install vllm datasets pyyaml wandb huggingface_hub",
+        "pip install vllm vllm-bnb-plugin datasets pyyaml wandb huggingface_hub",
     ]
     for cmd in cmds:
         print(f"Running: {cmd}")

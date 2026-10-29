@@ -33,4 +33,7 @@ Running log of decisions, findings, and gotchas. Newest first.
 
 ## Gotchas
 
+- **Unsloth vLLM bitsandbytes plugin:** `vLLM >= 0.28` moved bitsandbytes out of tree. Using `load_in_4bit=True` with `fast_inference=True` requires `pip install vllm-bnb-plugin` and `unsloth_zoo`.
+- **Kaggle script secrets:** In script mode (`kernel_type: script`), `kaggle_secrets.UserSecretsClient()` requires internet enabled and secrets properly configured; handle connection errors gracefully.
+
 - _(fill in as you hit them)_
