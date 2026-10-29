@@ -2,6 +2,9 @@
 
 **Benchmark Evaluation**: GSM8K Test Set, Fixed Subset (\(n = 300\), `seed = 42`), greedy decoding (`temperature = 0.0`, `max_new_tokens = 512`).
 
+- 🌐 **Interactive Space Showcase**: [raju-ai/grpo-gsm8k-reasoning-showcase](https://huggingface.co/spaces/raju-ai/grpo-gsm8k-reasoning-showcase)
+- 🤗 **Hugging Face Model Adapter**: [raju-ai/qwen2.5-1.5b-grpo-gsm8k](https://huggingface.co/raju-ai/qwen2.5-1.5b-grpo-gsm8k)
+
 ---
 
 ## 1. Benchmark Comparison Table

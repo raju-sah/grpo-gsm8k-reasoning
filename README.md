@@ -2,7 +2,10 @@
 
 Teaching a 0.5B–1.5B LLM to reason on GSM8K with **GRPO** (Group Relative Policy Optimization, the DeepSeek-R1 RL technique), trained on a **free Kaggle T4 GPU** with Unsloth 4-bit + vLLM + TRL `GRPOTrainer`.
 
-> **Status**: Successfully Completed! See [PLAN.md](file:///home/raju/AI-ML%20Projects/grpo-gsm8k-reasoning/PLAN.md) for the project roadmap, [NOTES.md](file:///home/raju/AI-ML%20Projects/grpo-gsm8k-reasoning/NOTES.md) for the decision and gotcha log, and [reports/results.md](file:///home/raju/AI-ML%20Projects/grpo-gsm8k-reasoning/reports/results.md) for full metrics.
+> **Status**: Successfully Completed!
+> - 🌐 **Interactive Space Showcase**: [raju-ai/grpo-gsm8k-reasoning-showcase](https://huggingface.co/spaces/raju-ai/grpo-gsm8k-reasoning-showcase) ([Direct Web](https://raju-ai-grpo-gsm8k-reasoning-showcase.static.hf.space))
+> - 🤗 **Hugging Face Model Adapter**: [raju-ai/qwen2.5-1.5b-grpo-gsm8k](https://huggingface.co/raju-ai/qwen2.5-1.5b-grpo-gsm8k)
+> - 📋 See [PLAN.md](file:///home/raju/AI-ML%20Projects/grpo-gsm8k-reasoning/PLAN.md) for roadmap, [NOTES.md](file:///home/raju/AI-ML%20Projects/grpo-gsm8k-reasoning/NOTES.md) for engineering logs, and [reports/results.md](file:///home/raju/AI-ML%20Projects/grpo-gsm8k-reasoning/reports/results.md) for metrics.
 
 ---
 

@@ -81,3 +81,6 @@ No R1-level "aha moments" at 1.5B.
 - [x] Training reward, correctness, integer compliance, and completion length progression documented across all 500 steps
 - [x] Detailed inspection of before/after reasoning traces and flexible vs strict extraction analysis (see `reports/samples/`)
 - [x] Trained 1.5B LoRA adapter and checkpoints 50–500 preserved in repository workspace
+- [x] Prompt-primed evaluation harness and benchmark analysis verifying +9.33% accuracy jump (27.00% -> 36.33%) and 99.33% format compliance
+- [x] LoRA adapter model card and weights published to Hugging Face Model Hub ([raju-ai/qwen2.5-1.5b-grpo-gsm8k](https://huggingface.co/raju-ai/qwen2.5-1.5b-grpo-gsm8k))
+- [x] Interactive benchmark and trace explorer deployed to Hugging Face Static Space ([raju-ai/grpo-gsm8k-reasoning-showcase](https://huggingface.co/spaces/raju-ai/grpo-gsm8k-reasoning-showcase))
