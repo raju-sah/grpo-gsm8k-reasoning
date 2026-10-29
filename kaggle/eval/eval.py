@@ -79,6 +79,16 @@ def main():
                 adapter_path = c
                 break
 
+    # Recursive search fallback if not in standard candidates
+    if not adapter_path and os.path.exists("/kaggle/input"):
+        for root, _, files in os.walk("/kaggle/input"):
+            if "adapter_config.json" in files:
+                if "final_adapter" in root or "500" in root:
+                    adapter_path = root
+                    break
+                elif not adapter_path:
+                    adapter_path = root
+
     if adapter_path:
         print("\n==========================================")
         print(f"Running Final Eval: GRPO Qwen2.5-1.5B ({adapter_path})")
