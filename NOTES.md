@@ -35,5 +35,6 @@ Running log of decisions, findings, and gotchas. Newest first.
 
 - **Unsloth vLLM bitsandbytes plugin:** `vLLM >= 0.28` moved bitsandbytes out of tree. Using `load_in_4bit=True` with `fast_inference=True` requires `pip install vllm-bnb-plugin` and `unsloth_zoo`.
 - **Kaggle script secrets:** In script mode (`kernel_type: script`), `kaggle_secrets.UserSecretsClient()` requires internet enabled and secrets properly configured; handle connection errors gracefully.
+- **PyTorch & TorchAudio CUDA mismatch in Kaggle environment:** When `vllm` installs/updates PyTorch (`2.13.0+cu130`), the preinstalled Kaggle `torchaudio` package (`cu128`) remains in site-packages. During vLLM model registry inspection, `transformers.audio_utils` imports `torchaudio`, triggering a `RuntimeError` due to mismatched CUDA runtimes. Fix: Run `pip uninstall -y torchaudio` during Kaggle environment setup. GSM8K reasoning is purely text-based, so torchaudio is not required.
 
 - _(fill in as you hit them)_

@@ -41,6 +41,7 @@ def setup_environment():
         "pip install unsloth_zoo",
         "pip install git+https://github.com/unslothai/unsloth.git",
         "pip install vllm vllm-bnb-plugin datasets pyyaml",
+        "pip uninstall -y torchaudio",
     ]
     for cmd in cmds:
         print(f"Running: {cmd}")
