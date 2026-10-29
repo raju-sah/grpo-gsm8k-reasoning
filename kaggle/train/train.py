@@ -38,6 +38,7 @@ def setup_environment():
         "pip install --upgrade --no-cache-dir pip",
         "pip install --no-deps bitsandbytes",
         "pip install --no-deps trl",
+        "pip install unsloth_zoo",
         "pip install git+https://github.com/unslothai/unsloth.git",
         "pip install vllm datasets pyyaml wandb huggingface_hub",
     ]

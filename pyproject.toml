@@ -10,7 +10,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-train = ["unsloth", "vllm", "trl", "datasets", "wandb", "huggingface_hub"]
+train = ["unsloth", "unsloth_zoo", "vllm", "trl", "datasets", "wandb", "huggingface_hub"]
 dev = ["pytest", "ruff"]
 
 [build-system]
