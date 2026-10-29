@@ -1,0 +1,5 @@
+spaces
+transformers>=4.45.0
+peft>=0.12.0
+torch
+accelerate
