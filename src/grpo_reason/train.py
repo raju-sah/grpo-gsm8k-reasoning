@@ -145,6 +145,16 @@ def train_grpo(
     # 5. Build GRPOConfig
     from trl import GRPOConfig, GRPOTrainer
 
+    report_to = grpo_cfg.get("report_to", "wandb")
+    if os.environ.get("WANDB_DISABLED") == "true" or (
+        report_to == "wandb" and not os.environ.get("WANDB_API_KEY")
+    ):
+        print(
+            "[Notice] WANDB_API_KEY not set or wandb disabled. Falling back to report_to='none'."
+        )
+        report_to = "none"
+        os.environ["WANDB_DISABLED"] = "true"
+
     training_args = GRPOConfig(
         output_dir=str(output_dir),
         learning_rate=float(grpo_cfg.get("learning_rate", 5e-6)),
@@ -162,7 +172,7 @@ def train_grpo(
         bf16=False,
         use_vllm=grpo_cfg.get("use_vllm", True),
         vllm_gpu_memory_utilization=cfg.get("vllm_gpu_memory_utilization", 0.5),
-        report_to=grpo_cfg.get("report_to", "wandb"),
+        report_to=report_to,
         save_strategy="steps",
         save_total_limit=3,
     )

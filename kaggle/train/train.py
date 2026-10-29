@@ -29,6 +29,7 @@ def setup_environment():
             print("WANDB_API_KEY successfully loaded from Kaggle Secrets.")
         except Exception as e:
             print(f"Note: WANDB_API_KEY not found in Kaggle Secrets ({e}).")
+            os.environ["WANDB_DISABLED"] = "true"
     except ImportError:
         print("Not running in Kaggle environment (kaggle_secrets not available).")
 
