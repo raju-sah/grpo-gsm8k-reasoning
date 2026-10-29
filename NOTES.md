@@ -18,9 +18,10 @@ Running log of decisions, findings, and gotchas. Newest first.
 
 | Date | Run | Model | Steps | GPU h | Outcome |
 |---|---|---|---|---|---|
-| 2026-10-28 | Baseline Eval | Qwen2.5-0.5B / 1.5B | 0 | ~1.2 h | 0.5B: 0.0% acc, 0.0% format (271 tok). 1.5B: 2.67% acc, 0.33% format (238 tok). Both attempt free-form reasoning without <think>/<answer> tags. |
+| 2026-10-28 | Baseline Eval | Qwen2.5-0.5B / 1.5B | 0 | ~1.2 h | 0.5B: 0.0% strict acc (41.33% flex), 0.0% format (271 tok). 1.5B: 2.67% strict acc (71.00% flex), 0.33% format (238 tok). Both attempt free-form reasoning without `<think>`/`<answer>` tags. |
 | 2026-10-29 | Debug Train | Qwen2.5-0.5B | 50 | ~0.7 h | 50/50 steps completed (runtime 16.8 min). Checkpoints saved at step 25 and 50. 6% non-zero reward variance groups due to 0.5B low baseline capacity. End-to-end Unsloth 4-bit + vLLM + TRL GRPOTrainer pipeline fully verified on T4 without OOM. |
 | 2026-10-29 | Main Train | Qwen2.5-1.5B | 500 | ~3.9 h | 500/500 steps completed (runtime ~3.7 h). Checkpoints saved every 50 steps up to checkpoint-500 + final_adapter. Mean reward increased from 0.4150 (steps 1–50) to 1.6769 (steps 451–500), correctness reward surged 4x from 0.355 to 1.450, with healthy non-zero group reward variance across 76% of batches. Stable completion length ~250 tokens without length hacking. |
+| 2026-10-29 | Final Eval | Qwen2.5-1.5B (GRPO 500) | 500 | ~0.3 h | 300 test problems on Kaggle T4 (greedy decoding, runtime 1.4 min via vLLM). Strict XML accuracy: 2.67%, Flexible accuracy: 64.33% (193/300), format compliance: 0.0%, average tokens: 233.8. Total GPU budget utilized: ~6.1 GPU hours out of 25h budget. |
 
 ## Reference notes
 
@@ -33,8 +34,14 @@ Running log of decisions, findings, and gotchas. Newest first.
   out of `/kaggle/working` (HF Hub or Kaggle dataset) before the 12 h limit.
 - Papers: DeepSeekMath (GRPO, arXiv 2402.03300), DeepSeek-R1 (arXiv 2501.12948).
 
-## Gotchas
+## Gotchas & Key Learnings
 
+- **Sampling Exploration vs. Greedy Argmax Discrepancy:**
+  During GRPO training with temperature sampling ($T \approx 0.9$), the policy explores candidate completions, discovering `<answer>...</answer>` tags and capturing the +2.0 correctness reward (training correctness reward surged from 0.3550 to 1.4500). However, during evaluation with greedy decoding ($T = 0.0$), the base model's strong pre-trained Instruct prior dominates the initial token distribution at position 0 (`"Think: "` rather than `"<think>"`). Once this autoregressive branch begins, the model produces natural language conclusions (`"Therefore, the answer is 109."`) instead of explicit XML tags.
+- **Format Reward Regex Rigidity:**
+  The `format_reward` regex required full string matching `^\s*<think>.+?</think>\s*<answer>.+?</answer>\s*$`. Because completions frequently included natural conversational prefixes or omitted the exact enclosing `<think>`, format reward was 0 in 491 of 500 steps. In future iterations, awarding soft partial credit for individual tags (`+0.25` for `<answer>` existence) provides a continuous gradient rather than an all-or-nothing step function.
+- **Assistant Prompt Pre-filling (Cold-Start):**
+  In DeepSeek-R1 and similar reasoning RL frameworks, the chat template or generation prompt is typically pre-filled with `<think>\n` at the start of the assistant turn. This forces greedy decoding along the thinking trajectory and ensures proper tag closure.
 - **Unsloth vLLM bitsandbytes plugin:** `vLLM >= 0.28` moved bitsandbytes out of tree. Using `load_in_4bit=True` with `fast_inference=True` requires `pip install vllm-bnb-plugin` and `unsloth_zoo`.
 - **Kaggle script secrets:** In script mode (`kernel_type: script`), `kaggle_secrets.UserSecretsClient()` requires internet enabled and secrets properly configured; handle connection errors gracefully. When `WANDB_API_KEY` is not attached, `wandb.init()` throws `UsageError`; resolved by setting `WANDB_DISABLED="true"` and falling back to `report_to="none"`.
 - **PyTorch & TorchAudio CUDA mismatch in Kaggle environment:** When `vllm` installs/updates PyTorch (`2.13.0+cu130`), the preinstalled Kaggle `torchaudio` package (`cu128`) remains in site-packages. During vLLM model registry inspection, `transformers.audio_utils` imports `torchaudio`, triggering a `RuntimeError` due to mismatched CUDA runtimes. Fix: Run `pip uninstall -y torchaudio` during Kaggle environment setup. GSM8K reasoning is purely text-based, so torchaudio is not required.

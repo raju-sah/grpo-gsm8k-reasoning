@@ -21,4 +21,4 @@ wandb/
 *.bin
 *.pt
 *.ckpt
-kaggle/**/out/
+kaggle/**/out*/
