@@ -124,6 +124,7 @@ def evaluate_model(
     run_name: str = "baseline",
     steps: int = 0,
     output_dir: str | Path = "reports",
+    prefill_think: bool = False,
 ) -> dict[str, Any]:
     """Evaluate a model on the fixed GSM8K test subset."""
     output_dir = Path(output_dir)
@@ -140,9 +141,10 @@ def evaluate_model(
         base_model_name=base_model_name,
     )
 
-    print(f"Formatting {len(dataset)} prompts with chat template...")
+    print(f"Formatting {len(dataset)} prompts with chat template (prefill_think={prefill_think})...")
     formatted_prompts = [
         tokenizer.apply_chat_template(item["prompt"], tokenize=False, add_generation_prompt=True)
+        + ("<think>\n" if prefill_think else "")
         for item in dataset
     ]
 
@@ -154,6 +156,10 @@ def evaluate_model(
         prompts_text=formatted_prompts,
         max_new_tokens=max_new_tokens,
     )
+
+    if prefill_think:
+        # Prepend the pre-filled <think>\n to reconstruct the full assistant output
+        completions = ["<think>\n" + c for c in completions]
 
     # Format into completion structures expected by reward functions
     completion_dicts = [[{"role": "assistant", "content": c}] for c in completions]
@@ -258,6 +264,11 @@ def main():
     parser.add_argument("--run-name", type=str, default="baseline", help="Run name identifier")
     parser.add_argument("--steps", type=int, default=0, help="Training step count (0 for baseline)")
     parser.add_argument("--output-dir", type=str, default="reports", help="Output directory")
+    parser.add_argument(
+        "--prefill-think",
+        action="store_true",
+        help="Pre-fill assistant turn with <think>\\n (standard DeepSeek-R1 evaluation method)",
+    )
 
     args = parser.parse_args()
     evaluate_model(
@@ -269,6 +280,7 @@ def main():
         run_name=args.run_name,
         steps=args.steps,
         output_dir=args.output_dir,
+        prefill_think=args.prefill_think,
     )
 
 
