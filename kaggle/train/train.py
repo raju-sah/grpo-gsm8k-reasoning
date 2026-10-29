@@ -90,8 +90,8 @@ def main():
 
     from grpo_reason.train import train_grpo
 
-    # Default to debug run (0.5B, 50 steps); switch config for full 1.5B run
-    config_file = os.environ.get("GRPO_CONFIG", "configs/grpo_debug_0.5b.yaml")
+    # Phase 2 main training run (1.5B, 500 steps)
+    config_file = os.environ.get("GRPO_CONFIG", "configs/grpo_1.5b.yaml")
     resume = os.environ.get("RESUME_CHECKPOINT", "true").lower() in ("true", "1")
 
     print("\n==========================================")
